@@ -17,6 +17,7 @@ import pickle #para cargar/guardar cookies
 import time
 import os
 import pyodbc
+import json
 
 
 
@@ -68,33 +69,48 @@ def listar_videos():
     driver.get('https://www.youtube.com/@ClaudiaNicolasa/videos')
     time.sleep(5)
 
-    infovideos = set()
 
-    i = 0
-    
-    # Encuentra el elemento específico para hacer scroll
-    #scroll_elemento = driver.find_element(By.XPATH, "//div[@class='_aano']")
-    #scroll_elemento = driver.find_element(By.CLASS_NAME, "_aano")
 
-    while i <= 20:
+    for i in range(20):
         driver.execute_script("""
-        
         var scrollt = document.querySelector('html')
         scrollt.scrollTop = scrollt.scrollHeight
         """)
-        time.sleep(1)  # Espera a que carguen más seguidores
-        videos = driver.find_elements(By.XPATH, ("//div[@class='style-scope ytd-rich-grid-media']//yt-formatted-string[@id='video-title']"))
-        # Encuentra todos los elementos de seguidores
+        time.sleep(3)
 
-        # Imprime el texto de cada seguidor
-        for video in videos:
         
-                infovideos.add(video.text)
-  
-        i+=1
+    #cajita = driver.find_elements(By.XPATH, ("//div[@class='style-scope ytd-rich-grid-media' and @id='dismissible']"))
 
-    return infovideos
+    videos_titulo_list = []
+    videos_visualizaciones_list = []
 
+    videos_titulo = driver.find_elements(By.XPATH, ("//div[@class='style-scope ytd-rich-grid-media']//yt-formatted-string[@id='video-title']"))
+    videos_visualizaciones = driver.find_elements(By.XPATH, ("//span[@class='inline-metadata-item style-scope ytd-video-meta-block']"))
+
+    #for caja in cajita:
+
+    # Imprime el texto de cada seguidor
+    for titulo in videos_titulo:
+        
+        videos_titulo_list.append(titulo.text)
+    
+    for visualizacion in videos_visualizaciones:
+        
+        videos_visualizaciones_list.append(visualizacion.text)
+
+    datavideo_diccionario = {
+        'lista1': videos_titulo_list,
+        'lista3': videos_visualizaciones_list
+    }
+
+    # Convertir el diccionario a JSON
+    json_data = json.dumps(datavideo_diccionario, indent=4)
+
+    
+
+    return     json_data 
+                       
+   
 
 
 

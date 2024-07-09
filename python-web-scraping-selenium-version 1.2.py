@@ -119,8 +119,21 @@ def listar_videos():
     data = json.loads(json_data)
     df = pd.DataFrame(data)
     
+    # Definir la ruta donde se guardará el archivo JSON
+    file_path = r'C:/Users/Carmen/Desktop/py/videos.json'
+    dir_path = os.path.dirname(file_path)
 
-    
+
+    # Guardar el objeto JSON en el archivo con manejo de errores
+    try:
+        with open(file_path, 'w', encoding='utf-8') as json_file:
+            json.dump(datavideo_diccionario, json_file, ensure_ascii=False, indent=4)
+        print(f"Archivo JSON guardado en: {file_path}")
+    except Exception as e:
+        print(f"Ocurrió un error al guardar el archivo JSON: {e}")
+
+
+    print(df)
     return json_data 
                        
    

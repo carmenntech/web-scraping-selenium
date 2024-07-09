@@ -18,6 +18,8 @@ import time
 import os
 import pyodbc
 import json
+import pandas as pd
+
 
 
 
@@ -49,7 +51,7 @@ def iniciar_chrome():
 def login_instagram():
     time.sleep(2)
     driver.get('https://www.youtube.com/')
-    time.sleep(2)
+    time.sleep(3)
     driver.execute_script("""                  
         var scrollt = document.querySelector('tp-yt-paper-dialog[id="dialog"]')
         scrollt.scrollTop = scrollt.scrollHeight
@@ -66,12 +68,12 @@ def login_instagram():
 def listar_videos():
     #print("paco paco paco " + driver)
     time.sleep(3)
-    driver.get('https://www.youtube.com/@ClaudiaNicolasa/videos')
+    driver.get('https://www.youtube.com/@belen_aguilera/videos')
     time.sleep(5)
 
 
 
-    for i in range(20):
+    for i in range(3):
         driver.execute_script("""
         var scrollt = document.querySelector('html')
         scrollt.scrollTop = scrollt.scrollHeight
@@ -82,7 +84,9 @@ def listar_videos():
     #cajita = driver.find_elements(By.XPATH, ("//div[@class='style-scope ytd-rich-grid-media' and @id='dismissible']"))
 
     videos_titulo_list = []
-    videos_visualizaciones_list = []
+    videos_visualizacionesyfecha_list = []
+    videos_visualizacionessolo_list = []
+    videos_fechasolo_list = []
 
     videos_titulo = driver.find_elements(By.XPATH, ("//div[@class='style-scope ytd-rich-grid-media']//yt-formatted-string[@id='video-title']"))
     videos_visualizaciones = driver.find_elements(By.XPATH, ("//span[@class='inline-metadata-item style-scope ytd-video-meta-block']"))
@@ -96,19 +100,28 @@ def listar_videos():
     
     for visualizacion in videos_visualizaciones:
         
-        videos_visualizaciones_list.append(visualizacion.text)
+        videos_visualizacionesyfecha_list.append(visualizacion.text)
+
+    for indice, valor in enumerate(videos_visualizacionesyfecha_list):
+        if indice % 2 == 0:
+            videos_visualizacionessolo_list.append(valor)
+        else:
+            videos_fechasolo_list.append(valor)
 
     datavideo_diccionario = {
-        'lista1': videos_titulo_list,
-        'lista3': videos_visualizaciones_list
+        'titulo': videos_titulo_list,
+        'views': videos_visualizacionessolo_list,
+        'fecha': videos_fechasolo_list
     }
 
     # Convertir el diccionario a JSON
     json_data = json.dumps(datavideo_diccionario, indent=4)
-
+    data = json.loads(json_data)
+    df = pd.DataFrame(data)
     
 
-    return     json_data 
+    
+    return json_data 
                        
    
 

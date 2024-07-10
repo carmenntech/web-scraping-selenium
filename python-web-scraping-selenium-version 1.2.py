@@ -68,12 +68,12 @@ def login_instagram():
 def listar_videos():
     #print("paco paco paco " + driver)
     time.sleep(3)
-    driver.get('https://www.youtube.com/@belen_aguilera/videos')
+    driver.get('https://www.youtube.com/@amaiaromero/videos')
     time.sleep(5)
 
 
 
-    for i in range(3):
+    for i in range(8):
         driver.execute_script("""
         var scrollt = document.querySelector('html')
         scrollt.scrollTop = scrollt.scrollHeight
@@ -87,9 +87,11 @@ def listar_videos():
     videos_visualizacionesyfecha_list = []
     videos_visualizacionessolo_list = []
     videos_fechasolo_list = []
+    videos_user_list = []
 
     videos_titulo = driver.find_elements(By.XPATH, ("//div[@class='style-scope ytd-rich-grid-media']//yt-formatted-string[@id='video-title']"))
     videos_visualizaciones = driver.find_elements(By.XPATH, ("//span[@class='inline-metadata-item style-scope ytd-video-meta-block']"))
+    videos_nombreuser = driver.find_element(By.XPATH, ("//span[@class='yt-core-attributed-string yt-content-metadata-view-model-wiz__metadata-text yt-core-attributed-string--white-space-pre-wrap yt-core-attributed-string--link-inherit-color']"))
 
     #for caja in cajita:
 
@@ -101,6 +103,7 @@ def listar_videos():
     for visualizacion in videos_visualizaciones:
         
         videos_visualizacionesyfecha_list.append(visualizacion.text)
+    
 
     for indice, valor in enumerate(videos_visualizacionesyfecha_list):
         if indice % 2 == 0:
@@ -111,7 +114,8 @@ def listar_videos():
     datavideo_diccionario = {
         'titulo': videos_titulo_list,
         'views': videos_visualizacionessolo_list,
-        'fecha': videos_fechasolo_list
+        'fecha': videos_fechasolo_list,
+        'user': videos_nombreuser.text
     }
 
     # Convertir el diccionario a JSON
@@ -121,6 +125,7 @@ def listar_videos():
     
     # Definir la ruta donde se guardará el archivo JSON
     file_path = r'C:/Users/Carmen/Desktop/py/videos.json'
+    file_path_csv = r'C:/Users/Carmen/Desktop/py/videos.csv'
     dir_path = os.path.dirname(file_path)
 
 
@@ -131,6 +136,15 @@ def listar_videos():
         print(f"Archivo JSON guardado en: {file_path}")
     except Exception as e:
         print(f"Ocurrió un error al guardar el archivo JSON: {e}")
+
+    # Guardar el DataFrame en un archivo CSV con codificación UTF-8
+    try:
+        df.to_csv(file_path_csv, index=False, encoding='utf-8')
+        print(f"Archivo CSV guardado en: {file_path_csv}")
+    except Exception as e:
+        print(f"Ocurrió un error al guardar el archivo CSV: {e}")
+
+    return json_data
 
 
     print(df)
